@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %}Questionnaire | Career Compass{% endblock %}
+{% block content %}
+<section class="wizard-shell">
+    <div class="wizard-topbar">
+        <div>
+            <span class="eyebrow">Interactive assessment</span>
+            <h1>Career questionnaire</h1>
+        </div>
+        <div class="wizard-step-label" data-step-label>Step 1 of 8: Core Interests</div>
+    </div>
+    <div class="wizard-progress" aria-hidden="true"><span data-wizard-progress></span></div>
+
+    <form method="post" class="questionnaire wizard-form" data-questionnaire data-wizard-form>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <fieldset class="form-section wizard-step active" data-step-title="Core Interests">
+            <legend>Which areas interest you? <small>Select 1 to 3</small></legend>
+            <p class="step-help">Choose broad areas that naturally make you curious.</p>
+            <div class="ai-question-helper" data-ai-helper data-category="interests">
+                <label>Describe your interests in your own words
+                    <textarea name="interests_text" maxlength="500" placeholder="Example: I enjoy building mobile apps, designing screens, and making things easy for users.">{{ submitted.get('interests_text', '') }}</textarea>
+                </label>
+                <div class="ai-helper-actions">
+                    <button type="button" class="ai-suggest-button" data-ai-suggest>Match my description</button>
+                    <small data-ai-status>Optional: write a short sentence and the system will suggest matching choices.</small>
+                </div>
+            </div>
+            <div class="option-grid wizard-option-grid">
+                {% for value, label in options.interests %}
+                <label class="option-card wizard-option-card">
+                    <input type="checkbox" name="interests" value="{{ value }}" data-max-group="{{ categories.interests.maximum }}"
+                        {% if value in submitted.getlist('interests') %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset class="form-section wizard-step" data-step-title="Current Skills">
+            <legend>Which skills do you currently have? <small>Select 2 to 5</small></legend>
+            <p class="step-help">Pick skills you can already explain or use in a small project.</p>
+            <div class="ai-question-helper" data-ai-helper data-category="skills">
+                <label>Describe your current skills in your own words
+                    <textarea name="skills_text" maxlength="500" placeholder="Example: I know Python basics, HTML, CSS, SQL, and I like solving coding problems.">{{ submitted.get('skills_text', '') }}</textarea>
+                </label>
+                <div class="ai-helper-actions">
+                    <button type="button" class="ai-suggest-button" data-ai-suggest>Match my description</button>
+                    <small data-ai-status>Optional: write a short sentence and the system will suggest matching choices.</small>
+                </div>
+            </div>
+            <div class="option-grid wizard-option-grid">
+                {% for value, label in options.skills %}
+                <label class="option-card wizard-option-card">
+                    <input type="checkbox" name="skills" value="{{ value }}" data-max-group="{{ categories.skills.maximum }}"
+                        {% if value in submitted.getlist('skills') %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset class="form-section wizard-step" data-step-title="Work Style">
+            <legend>How do you prefer to work? <small>Select 1 or 2</small></legend>
+            <p class="step-help">This helps distinguish careers that feel similar but work very differently day to day.</p>
+            <div class="ai-question-helper" data-ai-helper data-category="work_styles">
+                <label>Describe your preferred work style
+                    <textarea name="work_styles_text" maxlength="500" placeholder="Example: I prefer structured tasks, careful analysis, and sometimes working independently.">{{ submitted.get('work_styles_text', '') }}</textarea>
+                </label>
+                <div class="ai-helper-actions">
+                    <button type="button" class="ai-suggest-button" data-ai-suggest>Match my description</button>
+                    <small data-ai-status>Optional: write a short sentence and the system will suggest matching choices.</small>
+                </div>
+            </div>
+            <div class="option-grid wizard-option-grid">
+                {% for value, label in options.work_styles %}
+                <label class="option-card wizard-option-card">
+                    <input type="checkbox" name="work_styles" value="{{ value }}" data-max-group="{{ categories.work_styles.maximum }}"
+                        {% if value in submitted.getlist('work_styles') %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset class="form-section wizard-step" data-step-title="Academic Strengths">
+            <legend>Which subjects are your strongest? <small>Select 1 to 3</small></legend>
+            <p class="step-help">Select subjects where you usually understand the ideas well.</p>
+            <div class="ai-question-helper" data-ai-helper data-category="subjects">
+                <label>Describe your strongest subjects
+                    <textarea name="subjects_text" maxlength="500" placeholder="Example: I usually perform well in programming, database systems, and software engineering.">{{ submitted.get('subjects_text', '') }}</textarea>
+                </label>
+                <div class="ai-helper-actions">
+                    <button type="button" class="ai-suggest-button" data-ai-suggest>Match my description</button>
+                    <small data-ai-status>Optional: write a short sentence and the system will suggest matching choices.</small>
+                </div>
+            </div>
+            <div class="option-grid wizard-option-grid">
+                {% for value, label in options.subjects %}
+                <label class="option-card wizard-option-card">
+                    <input type="checkbox" name="subjects" value="{{ value }}" data-max-group="{{ categories.subjects.maximum }}"
+                        {% if value in submitted.getlist('subjects') %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset class="form-section wizard-step" data-step-title="Career Goals">
+            <legend>What are your career goals? <small>Select 1 or 2</small></legend>
+            <p class="step-help">Choose the outcomes you want your future work to create.</p>
+            <div class="ai-question-helper" data-ai-helper data-category="goals">
+                <label>Describe your career goals
+                    <textarea name="goals_text" maxlength="500" placeholder="Example: I want to build useful digital products and eventually become a technical leader.">{{ submitted.get('goals_text', '') }}</textarea>
+                </label>
+                <div class="ai-helper-actions">
+                    <button type="button" class="ai-suggest-button" data-ai-suggest>Match my description</button>
+                    <small data-ai-status>Optional: write a short sentence and the system will suggest matching choices.</small>
+                </div>
+            </div>
+            <div class="option-grid wizard-option-grid">
+                {% for value, label in options.goals %}
+                <label class="option-card wizard-option-card">
+                    <input type="checkbox" name="goals" value="{{ value }}" data-max-group="{{ categories.goals.maximum }}"
+                        {% if value in submitted.getlist('goals') %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset class="form-section wizard-step" data-step-title="Preferred Activities">
+            <legend>Which activities would you enjoy regularly? <small>Select 1 to 3</small></legend>
+            <p class="step-help">These are the tasks you might actually do each week in a role.</p>
+            <div class="ai-question-helper" data-ai-helper data-category="activities">
+                <label>Describe activities you would enjoy
+                    <textarea name="activities_text" maxlength="500" placeholder="Example: I like coding features, debugging, building interfaces, and testing prototypes.">{{ submitted.get('activities_text', '') }}</textarea>
+                </label>
+                <div class="ai-helper-actions">
+                    <button type="button" class="ai-suggest-button" data-ai-suggest>Match my description</button>
+                    <small data-ai-status>Optional: write a short sentence and the system will suggest matching choices.</small>
+                </div>
+            </div>
+            <div class="option-grid wizard-option-grid">
+                {% for value, label in options.activities %}
+                <label class="option-card wizard-option-card">
+                    <input type="checkbox" name="activities" value="{{ value }}" data-max-group="{{ categories.activities.maximum }}"
+                        {% if value in submitted.getlist('activities') %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset class="form-section wizard-step" data-step-title="Career Priorities">
+            <legend>What matters most in your career? <small>Select 1 or 2</small></legend>
+            <p class="step-help">Priorities help the recommendation reflect the type of career life you want.</p>
+            <div class="ai-question-helper" data-ai-helper data-category="priorities">
+                <label>Describe your career priorities
+                    <textarea name="priorities_text" maxlength="500" placeholder="Example: I want strong job demand, continuous learning, and remote flexibility.">{{ submitted.get('priorities_text', '') }}</textarea>
+                </label>
+                <div class="ai-helper-actions">
+                    <button type="button" class="ai-suggest-button" data-ai-suggest>Match my description</button>
+                    <small data-ai-status>Optional: write a short sentence and the system will suggest matching choices.</small>
+                </div>
+            </div>
+            <div class="option-grid wizard-option-grid">
+                {% for value, label in options.priorities %}
+                <label class="option-card wizard-option-card">
+                    <input type="checkbox" name="priorities" value="{{ value }}" data-max-group="{{ categories.priorities.maximum }}"
+                        {% if value in submitted.getlist('priorities') %}checked{% endif %}>
+                    <span>{{ label }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <div class="wizard-actions">
+            <button class="wizard-back" type="button" data-wizard-back>Back</button>
+            <button class="button wizard-next" type="button" data-wizard-next>Next Question &rarr;</button>
+            <button class="button wizard-submit" type="submit" data-wizard-submit>See my recommendation</button>
+        </div>
+    </form>
+
+    <div class="prediction-loader" data-prediction-loader aria-live="polite" aria-hidden="true">
+        <div class="prediction-loader-card">
+            <span class="loader-ring"></span>
+            <strong data-loader-message>Predicting your best career path</strong>
+            <p>Analysing your answers against the CS career profiles...</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

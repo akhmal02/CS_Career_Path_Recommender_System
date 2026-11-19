@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Error {{ code }} | Career Compass{% endblock %}
+{% block content %}
+<section class="auth-shell">
+    <div class="auth-card">
+        <span class="eyebrow">Error {{ code }}</span>
+        <h1>We could not complete that request.</h1>
+        <p>{{ description }}</p>
+        <a class="button" href="{{ url_for('index') }}">Return home</a>
+    </div>
+</section>
+{% endblock %}
+

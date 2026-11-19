@@ -1,0 +1,21 @@
+# Environment & Private Credentials (Never commit real keys)
+.env
+.env.local
+*.env
+
+# Python Virtual Environments & Bytecode
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Extracted 117MB raw model pickle (stored compressed in 02_EXPERIMENTAL_DATA/career_model.zip)
+career_model.pkl
+
+# OS & IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

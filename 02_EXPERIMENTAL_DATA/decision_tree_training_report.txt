@@ -1,0 +1,37 @@
+Decision Tree Dummy Data Training Report
+========================================
+Rows generated: 3000
+Training rows: 2400
+Testing rows: 600
+Feature count: 94
+Career classes: ai, business_analyst, cloud, data, data_scientist, database, design, devops, game, mobile, networking, qa_automation, security, software, systems_analyst, web
+Accuracy: 0.5983
+
+Classification report:
+                  precision    recall  f1-score   support
+
+              ai       0.58      0.43      0.49        42
+business_analyst       0.47      0.45      0.46        40
+           cloud       0.60      0.62      0.61        50
+            data       0.54      0.64      0.59        39
+  data_scientist       0.62      0.71      0.67        35
+        database       0.41      0.67      0.51        36
+          design       0.73      0.65      0.69        37
+          devops       0.60      0.72      0.65        25
+            game       0.48      0.74      0.58        38
+          mobile       0.78      0.57      0.66        37
+      networking       0.86      0.54      0.67        35
+   qa_automation       0.61      0.50      0.55        38
+        security       0.74      0.64      0.68        39
+        software       0.61      0.68      0.64        37
+ systems_analyst       0.65      0.50      0.57        34
+             web       0.67      0.58      0.62        38
+
+        accuracy                           0.60       600
+       macro avg       0.62      0.60      0.60       600
+    weighted avg       0.62      0.60      0.60       600
+
+
+Dataset saved to: C:\Users\user\Documents\Codex\2026-06-10\files-mentioned-by-the-user-master\Career_Path_Recommender\career_training_data_dummy.csv
+Model saved to: C:\Users\user\Documents\Codex\2026-06-10\files-mentioned-by-the-user-master\Career_Path_Recommender\career_model.pkl
+Transformer saved to: C:\Users\user\Documents\Codex\2026-06-10\files-mentioned-by-the-user-master\Career_Path_Recommender\mlb_transformer.pkl

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Career Path Assistant | Career Compass{% endblock %}
+{% block content %}
+<section class="chatbot-page minimal-chat-page {% if chat_history %}conversation-started{% endif %}" data-chatbot-page>
+    <header class="chatbot-app-header">
+        <div class="chatbot-logo" aria-hidden="true">AI</div>
+        <div>
+            <span class="eyebrow">AI career guidance</span>
+            <h1>Career Path Assistant</h1>
+        </div>
+        <span class="chatbot-connection-pill {% if gemini_ready %}ready{% endif %}" title="{{ gemini_status.detail }}">
+            {{ gemini_status.label }}
+        </span>
+    </header>
+
+    <section class="chatbot-greeting">
+        <div class="chatbot-greeting-copy" data-chatbot-greeting-copy>
+            <h2>
+                {% if session.get('user_name') %}
+                    Hello, {{ session.get('user_name') }}!
+                {% else %}
+                    Hello there!
+                {% endif %}
+            </h2>
+            <p>How can I assist with your computer science career journey?</p>
+        </div>
+        <div class="suggested-questions" aria-label="Suggested questions">
+            <button type="button" data-suggestion="What career matches my skills?">What career matches my skills?</button>
+            <button type="button" data-suggestion="How does the recommendation score work?">How does the score work?</button>
+            <button type="button" data-suggestion="Tell me about cybersecurity careers.">Tell me about cybersecurity careers.</button>
+            <button type="button" data-suggestion="What skills should I improve?">What skills should I improve?</button>
+            <button type="button" data-suggestion="Compare Data Analyst and Data Scientist.">Data Analyst vs Data Scientist</button>
+            <button type="button" data-suggestion="How can I improve my portfolio?">How can I improve my portfolio?</button>
+            <button type="button" data-suggestion="What beginner project should I build?">What beginner project should I build?</button>
+            <button type="button" data-suggestion="Explain Software Engineer vs Full Stack Developer.">Software Engineer vs Full Stack</button>
+            <button type="button" data-suggestion="What should I learn for AI Engineer?">What should I learn for AI Engineer?</button>
+            <button type="button" data-suggestion="How do I choose between Cloud, DevOps, and Network careers?">Cloud vs DevOps vs Network</button>
+        </div>
+    </section>
+
+    <section class="chatbot-workspace minimal-chat-workspace">
+        <div class="chatbot-thread minimal-chat-thread" data-chatbot-thread aria-live="polite">
+            {% for message in chat_history %}
+            <article class="chat-bubble {% if message.role == 'user' %}user{% else %}bot{% endif %}">
+                {% if message.role != 'user' %}<span class="bot-avatar" aria-hidden="true">AI</span>{% endif %}
+                <div>
+                    <strong>{% if message.role == 'user' %}You{% else %}Career Path Assistant{% endif %}</strong>
+                    <p>{{ message.content }}</p>
+                    {% if message.role != 'user' and message.metadata and message.metadata.source %}
+                    <small class="chat-source">
+                        {% if message.metadata.source == 'gemini' %}Answered by Gemini{% else %}Answered by offline fallback{% endif %}
+                    </small>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <form class="chatbot-compose minimal-chat-compose" data-chatbot-page-form>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <textarea name="message" rows="1" maxlength="600" placeholder="Ask about a computer science career..." required></textarea>
+            <button class="send-chat-button" type="submit" aria-label="Send message" disabled>-&gt;</button>
+        </form>
+    </section>
+</section>
+{% endblock %}

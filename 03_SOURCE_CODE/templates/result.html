@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}Your recommendations | Career Compass{% endblock %}
+{% block content %}
+<section class="result-report" data-result-tabs>
+    <div class="result-tabs" role="tablist" aria-label="Top career recommendations">
+        {% for item in recommendations %}
+        <button class="result-tab {% if loop.first %}active{% endif %}" type="button" data-result-tab="{{ loop.index0 }}">
+            <span>#{{ loop.index }} Match</span>
+            <strong>{{ item.career_path.name }}</strong>
+            <em>{{ item.percentage }}%</em>
+        </button>
+        {% endfor %}
+    </div>
+
+    {% for item in recommendations %}
+    <article class="result-panel {% if loop.first %}active{% endif %}" data-result-panel="{{ loop.index0 }}">
+        <section class="report-hero-card">
+            <div>
+                <span class="eyebrow">#{{ loop.index }} Recommendation</span>
+                <h1>{{ item.career_path.name }}</h1>
+                <p>{{ item.career_path.description }}</p>
+                <p class="tier-description">{{ item.hybrid_explanation }}</p>
+            </div>
+            <div class="report-ring" style="--score: {{ item.percentage|int }}">
+                <strong>{{ item.percentage }}%</strong>
+                <span>{{ item.recommendation_level }}</span>
+            </div>
+        </section>
+
+        <section class="hybrid-score-grid" aria-label="Recommendation score breakdown">
+            <article>
+                <span>Final Recommendation Score</span>
+                <strong>{{ item.percentage }}%</strong>
+                <small>Formula: rule 65% + ML 25% + agreement 10%</small>
+            </article>
+            <article>
+                <span>Recommendation Level</span>
+                <strong>{{ item.recommendation_level }}</strong>
+                <small>{{ item.hybrid_explanation }}</small>
+            </article>
+            <article>
+                <span>Rule-based Match</span>
+                <strong>{{ item.rule_based_score }}%</strong>
+                <small>Transparent score from the questionnaire rule categories.</small>
+            </article>
+            <article>
+                <span>ML Confidence</span>
+                <strong>{% if item.ml_confidence is not none %}{{ item.ml_confidence }}%{% else %}Unavailable{% endif %}</strong>
+                <small>Random Forest confidence for this career path.</small>
+            </article>
+            <article>
+                <span>System Agreement</span>
+                <strong>{% if item.agreement_score is not none %}{{ item.agreement_score }}{% else %}Unavailable{% endif %}</strong>
+                <small>100 = RF top career, 70 = in RF top 3, 40 = not in RF top 3.</small>
+            </article>
+        </section>
+
+        <section class="report-grid scores-grid">
+            {% for category in item.category_breakdown %}
+            {% set ratio = (category.points / category.maximum * 100)|round %}
+            <div class="score-tile {% if ratio >= 75 %}score-good{% elif ratio >= 40 %}score-mid{% else %}score-low{% endif %}">
+                <div class="score-row-heading">
+                    <span>{{ category.label }}</span>
+                    <strong>{{ category.points }}/{{ category.maximum }}</strong>
+                </div>
+                <div class="score-track thick-track"><span style="width: {{ ratio }}%"></span></div>
+                <span class="score-level-label">
+                    {% if ratio >= 75 %}Strong alignment{% elif ratio >= 40 %}Developing alignment{% else %}Growth priority{% endif %}
+                </span>
+                {% if category.matched %}
+                <small>Matched: {{ category.matched|join(', ') }}</small>
+                {% else %}
+                <small>Growth area for this path</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+
+        <section class="analysis-grid">
+            <article class="analysis-card fit-card">
+                <h2>Why it suits you</h2>
+                <ul class="check-list">
+                    {% for detail in item.fit_details %}<li>{{ detail }}</li>{% endfor %}
+                </ul>
+                <h3>Matched core skills</h3>
+                <div class="tags">
+                    {% for skill in item.matched_skills %}<span>{{ skill }}</span>{% else %}<em>None selected yet</em>{% endfor %}
+                </div>
+            </article>
+
+            <article class="analysis-card grow-card">
+                <h2>Opportunities to grow</h2>
+                <ul class="gap-list">
+                    {% for detail in item.gap_details %}<li>{{ detail }}</li>{% endfor %}
+                </ul>
+                <h3>Skills to develop</h3>
+                <div class="tags tags-warm">
+                    {% for skill in item.skills_to_improve %}<span>{{ skill }}</span>{% else %}<em>No core skill gaps</em>{% endfor %}
+                </div>
+            </article>
+        </section>
+
+        <section class="next-steps-card">
+            <span class="spark">Tips</span>
+            <div>
+                <h2>Suggested learning and next steps</h2>
+                <p><strong>Courses:</strong> {{ item.career_path.courses|join(', ') }}</p>
+                <p><strong>Career coach tip:</strong> {{ item.coach_tip }}</p>
+                {% if ml_result %}
+                <div class="ml-inline">
+                    <button class="ml-toggle-button" type="button" data-ml-toggle>
+                        How this score is calculated
+                    </button>
+                    <div class="ml-inline-panel" data-ml-panel hidden>
+                        {% if ml_result.available %}
+                        <div class="ml-summary-line">
+                            <strong>Final score formula</strong>
+                            <span>{{ item.percentage }}% final recommendation score</span>
+                        </div>
+                        <p class="confidence-note">
+                            The final score combines three values: the explainable rule-based match, the Random Forest confidence, and how much both systems agree. Career ranking still follows the rule-based recommender.
+                        </p>
+                        <div class="calculation-breakdown">
+                            <p><strong>Formula:</strong> Final Score = (Rule-based Match x 0.65) + (ML Confidence x 0.25) + (System Agreement x 0.10)</p>
+                            <p><strong>Your calculation:</strong> ({{ item.rule_based_score }} x 0.65) + ({% if item.ml_confidence is not none %}{{ item.ml_confidence }}{% else %}0{% endif %} x 0.25) + ({% if item.agreement_score is not none %}{{ item.agreement_score }}{% else %}0{% endif %} x 0.10) = {{ item.percentage }}%</p>
+                            <p><strong>Agreement meaning:</strong> 100 means Random Forest chose the same top career, 70 means this career appears in the Random Forest top 3, and 40 means it does not appear in the Random Forest top 3.</p>
+                            <p><strong>Random Forest top career:</strong> {{ ml_result.predicted_name }}</p>
+                        </div>
+                        <div class="ml-probabilities compact">
+                            {% for prediction in ml_result.top_predictions %}
+                            <div>
+                                <span>{{ loop.index }}. {{ prediction.name }}{% if prediction.rule_percentage is defined %} (rule {{ prediction.rule_percentage }}%, ML {{ prediction.confidence }}%, agreement {{ prediction.agreement_score }}){% endif %}</span>
+                                <div class="ml-track"><i style="width: {{ prediction.final_score }}%"></i></div>
+                                <b>{{ prediction.final_score }}%</b>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="ml-unavailable">
+                            ML could not load{% if ml_result.error %}: {{ ml_result.error }}{% endif %}. The rule-based recommendation still works normally.
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+    </article>
+    {% endfor %}
+</section>
+
+<div class="center-actions">
+    <a class="button" href="{{ url_for('questionnaire') }}">Retake questionnaire</a>
+</div>
+{% endblock %}

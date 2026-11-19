@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Career Compass | CS Career Dashboard{% endblock %}
+{% block content %}
+<section class="landing-hero">
+    <div class="landing-copy">
+        <span class="eyebrow">Computer Science career guide</span>
+        <h1>Find the CS path that fits how you think.</h1>
+        <p>CareerCompass turns your interests, skills, study strengths, goals, activities, and priorities into a clear career shortlist. You get the top three paths, the reason behind each score, and practical next steps you can actually use.</p>
+        <div class="hero-actions">
+            <a class="gradient-button" href="{{ url_for('questionnaire') }}">Start assessment <span>&rarr;</span></a>
+            <a class="outline-button" href="#careers">Explore paths</a>
+        </div>
+        <div class="hero-proof" aria-label="System highlights">
+            <span>Rule-based ranking</span>
+            <span>Random Forest support</span>
+            <span>Saved latest result</span>
+        </div>
+    </div>
+    <div class="roadmap-graphic" aria-hidden="true">
+        <div class="roadmap-node node-a">Skills</div>
+        <div class="roadmap-node node-b">Rules</div>
+        <div class="roadmap-node node-c">Career</div>
+        <svg viewBox="0 0 520 360" role="img">
+            <path d="M70 240 C150 80 260 290 355 125 S455 120 470 70" />
+            <circle cx="70" cy="240" r="9" />
+            <circle cx="250" cy="205" r="9" />
+            <circle cx="355" cy="125" r="9" />
+            <circle cx="470" cy="70" r="9" />
+        </svg>
+    </div>
+</section>
+
+<section class="bento-dashboard" aria-label="Dashboard explanation">
+    <article class="bento-card progress-card">
+        <span class="bento-icon">01</span>
+        <h2>Start From Zero</h2>
+        <p>Your assessment begins cleanly, then your profile keeps the latest top three recommendations for review after you sign in again.</p>
+        <div class="mini-ring"><strong>0%</strong><span>not started</span></div>
+    </article>
+    <article class="bento-card">
+        <span class="bento-icon">02</span>
+        <h2>Career Signals</h2>
+        <p>The system looks for patterns across skills, work style, goals, and learning preferences instead of relying on one answer.</p>
+        <ul class="trend-list">
+            <li><span>Build</span> Software and full stack paths</li>
+            <li><span>Analyse</span> Data and AI paths</li>
+            <li><span>Protect</span> Security and network paths</li>
+        </ul>
+    </article>
+    <article class="bento-card">
+        <span class="bento-icon">03</span>
+        <h2>Guided Assessment</h2>
+        <p>Answer one category at a time, or describe your preference in your own words and let the helper match suitable choices.</p>
+        <a class="button bento-button" href="{{ url_for('questionnaire') }}">Start assessment</a>
+    </article>
+    <article class="bento-card bento-wide">
+        <span class="bento-icon">04</span>
+        <h2>Seven Evidence Categories</h2>
+        <p>Interests, skills, work style, academic strengths, goals, activities, and priorities are scored separately. That makes the result easier to explain in a report, presentation, or lecturer discussion.</p>
+    </article>
+    <article class="bento-card">
+        <span class="bento-icon">05</span>
+        <h2>Three Clear Options</h2>
+        <p>The result page keeps the ranking explainable while showing rule-based match, ML confidence, system agreement, and the final hybrid score.</p>
+    </article>
+</section>
+
+<section class="career-catalogue" id="careers">
+    <div class="catalogue-heading">
+        <div>
+            <span class="eyebrow">Career library</span>
+            <h2>Explore all career paths</h2>
+            <p>Search by role, skill, or description. Open any path to view the core skills, work style, and learning direction behind it.</p>
+        </div>
+    </div>
+
+    <div class="career-toolbar">
+        <label class="career-search">
+            <span>Search</span>
+            <input type="search" placeholder="Search careers, skills, or descriptions..." data-career-search>
+        </label>
+        <a class="filter-button" href="{{ url_for('questionnaire') }}">Start Assessment</a>
+    </div>
+    <p class="search-status" data-search-status></p>
+
+    <div class="dashboard-card-grid">
+        {% for path in paths %}
+        <a class="dashboard-career-card" href="{{ path.href }}" data-career-card data-career-name="{{ path.name }}" data-search-text="{{ path.name }} {{ path.short_description }} {{ path.search_text }}">
+            <span class="career-icon-svg career-icon-{{ path.icon }}" aria-hidden="true">
+                {% if path.icon == 'code' %}
+                <svg viewBox="0 0 48 48"><path d="M18 15 9 24l9 9"/><path d="m30 15 9 9-9 9"/><path d="m27 10-6 28"/></svg>
+                {% elif path.icon == 'layers' %}
+                <svg viewBox="0 0 48 48"><path d="m24 6 18 10-18 10L6 16 24 6Z"/><path d="m8 25 16 9 16-9"/><path d="m8 33 16 9 16-9"/></svg>
+                {% elif path.icon == 'phone' %}
+                <svg viewBox="0 0 48 48"><rect x="15" y="5" width="18" height="38" rx="4"/><path d="M21 37h6"/></svg>
+                {% elif path.icon == 'chart' %}
+                <svg viewBox="0 0 48 48"><path d="M8 40h34"/><rect x="12" y="24" width="6" height="12" rx="1"/><rect x="22" y="16" width="6" height="20" rx="1"/><rect x="32" y="9" width="6" height="27" rx="1"/></svg>
+                {% elif path.icon == 'shield' %}
+                <svg viewBox="0 0 48 48"><path d="M24 5 39 11v11c0 10-6 17-15 21C15 39 9 32 9 22V11l15-6Z"/><path d="m17 24 5 5 10-11"/></svg>
+                {% elif path.icon == 'network' %}
+                <svg viewBox="0 0 48 48"><circle cx="24" cy="9" r="5"/><circle cx="10" cy="36" r="5"/><circle cx="38" cy="36" r="5"/><path d="M22 14 12 31"/><path d="m26 14 10 17"/><path d="M15 36h18"/></svg>
+                {% elif path.icon == 'pen' %}
+                <svg viewBox="0 0 48 48"><path d="M33 6 42 15 19 38 8 41l3-11L33 6Z"/><path d="m29 10 9 9"/></svg>
+                {% elif path.icon == 'database' %}
+                <svg viewBox="0 0 48 48"><ellipse cx="24" cy="11" rx="16" ry="6"/><path d="M8 11v26c0 3 7 6 16 6s16-3 16-6V11"/><path d="M8 24c0 3 7 6 16 6s16-3 16-6"/></svg>
+                {% elif path.icon == 'brain' %}
+                <svg viewBox="0 0 48 48"><path d="M20 7c-5 0-9 4-9 9-4 2-6 6-5 11 1 4 4 7 8 8 1 4 4 6 8 6h4c4 0 7-2 8-6 4-1 7-4 8-8 1-5-1-9-5-11 0-5-4-9-9-9-2 0-4 1-5 3-1-2-3-3-5-3Z"/><path d="M24 10v31"/><path d="M16 20h8"/><path d="M24 25h8"/></svg>
+                {% elif path.icon == 'line' %}
+                <svg viewBox="0 0 48 48"><path d="M7 39h34"/><path d="M10 32 18 24l7 5 12-16"/><circle cx="18" cy="24" r="3"/><circle cx="25" cy="29" r="3"/><circle cx="37" cy="13" r="3"/></svg>
+                {% elif path.icon == 'cloud' %}
+                <svg viewBox="0 0 48 48"><path d="M16 36H37c4 0 7-3 7-7s-3-7-7-7h-1c-2-7-8-11-15-9-5 1-8 5-9 10-4 1-7 4-7 8s4 5 11 5Z"/><path d="m25 18-5 10h7l-4 9 10-13h-7l4-6Z"/></svg>
+                {% elif path.icon == 'trending' %}
+                <svg viewBox="0 0 48 48"><path d="M7 35 18 24l8 8 15-18"/><path d="M31 14h10v10"/></svg>
+                {% elif path.icon == 'game' %}
+                <svg viewBox="0 0 48 48"><rect x="7" y="18" width="34" height="18" rx="8"/><path d="M17 23v8"/><path d="M13 27h8"/><circle cx="31" cy="25" r="1.5"/><circle cx="36" cy="30" r="1.5"/></svg>
+                {% elif path.icon == 'infinity' %}
+                <svg viewBox="0 0 48 48"><path d="M18 17c-6 0-10 4-10 7s4 7 10 7c7 0 10-14 18-14 6 0 10 4 10 7s-4 7-10 7c-8 0-11-14-18-14Z"/></svg>
+                {% elif path.icon == 'fork' %}
+                <svg viewBox="0 0 48 48"><circle cx="12" cy="9" r="4"/><circle cx="36" cy="9" r="4"/><circle cx="24" cy="39" r="4"/><path d="M12 13v6c0 6 4 10 12 10"/><path d="M36 13v6c0 6-4 10-12 10"/><path d="M24 29v6"/></svg>
+                {% elif path.icon == 'clipboard' %}
+                <svg viewBox="0 0 48 48"><rect x="12" y="8" width="24" height="34" rx="4"/><path d="M19 8c0-3 10-3 10 0"/><path d="m18 25 4 4 8-9"/><path d="M18 35h12"/></svg>
+                {% endif %}
+            </span>
+            <div class="career-card-top">
+                <span class="career-code">PATH {{ "%02d"|format(loop.index) }}</span>
+            </div>
+            <h3>{{ path.name }}</h3>
+            <p>{{ path.short_description }}</p>
+            <div class="tech-badges">
+                {% for badge in path.badges %}<span>{{ badge }}</span>{% endfor %}
+            </div>
+            <div class="card-link">View career details <span>&rarr;</span></div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

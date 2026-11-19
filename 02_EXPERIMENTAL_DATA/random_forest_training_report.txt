@@ -1,0 +1,79 @@
+Random Forest Career Model Training Report
+==========================================
+Dataset: career_training_data_dummy.csv
+Total rows: 3000
+Train rows: 2400
+Test rows: 600
+Model: RandomForestClassifier
+Parameters:
+  n_estimators=400
+  max_depth=None
+  min_samples_leaf=1
+  class_weight=balanced
+  bootstrap=True
+  oob_score=True
+  random_state=42
+
+Accuracy: 0.8967 (89.67%)
+Misclassification Rate: 0.1033 (10.33%)
+OOB Score: 0.8779 (87.79%)
+
+Macro Average Metrics:
+  Precision: 0.8982
+  Recall: 0.8944
+  F1 Score: 0.8942
+
+Weighted Average Metrics:
+  Precision: 0.9005
+  Recall: 0.8967
+  F1 Score: 0.8965
+
+Classification Report:
+                  precision    recall  f1-score   support
+
+              ai       0.97      0.93      0.95        42
+business_analyst       0.92      0.85      0.88        40
+           cloud       0.84      0.94      0.89        50
+            data       0.88      0.90      0.89        39
+  data_scientist       0.92      0.97      0.94        35
+        database       0.91      0.81      0.85        36
+          design       0.97      0.89      0.93        37
+          devops       0.78      0.84      0.81        25
+            game       0.86      0.97      0.91        38
+          mobile       0.80      0.89      0.85        37
+      networking       0.87      0.74      0.80        35
+   qa_automation       0.95      0.95      0.95        38
+        security       0.92      0.85      0.88        39
+        software       1.00      0.86      0.93        37
+ systems_analyst       0.85      0.97      0.90        34
+             web       0.95      0.95      0.95        38
+
+        accuracy                           0.90       600
+       macro avg       0.90      0.89      0.89       600
+    weighted avg       0.90      0.90      0.90       600
+
+
+Confusion Matrix Labels:
+ai, business_analyst, cloud, data, data_scientist, database, design, devops, game, mobile, networking, qa_automation, security, software, systems_analyst, web
+
+Confusion Matrix:
+[[39  0  0  0  1  0  0  1  0  1  0  0  0  0  0  0]
+ [ 0 34  0  0  0  0  0  0  1  0  0  1  0  0  4  0]
+ [ 0  0 47  0  0  0  0  0  0  2  1  0  0  0  0  0]
+ [ 0  0  0 35  2  0  0  0  1  0  0  0  1  0  0  0]
+ [ 1  0  0  0 34  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0  1  0  1  0 29  0  1  0  0  2  0  1  0  1  0]
+ [ 0  0  0  0  0  0 33  0  1  1  0  0  0  0  0  2]
+ [ 0  0  2  1  0  0  0 21  0  0  1  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 37  1  0  0  0  0  0  0]
+ [ 0  0  1  0  0  0  0  0  2 33  0  0  0  0  1  0]
+ [ 0  1  3  1  0  1  0  1  0  0 26  1  1  0  0  0]
+ [ 0  0  1  0  0  0  0  1  0  0  0 36  0  0  0  0]
+ [ 0  0  2  1  0  2  0  1  0  0  0  0 33  0  0  0]
+ [ 0  0  0  1  0  0  0  1  1  2  0  0  0 32  0  0]
+ [ 0  1  0  0  0  0  0  0  0  0  0  0  0  0 33  0]
+ [ 0  0  0  0  0  0  1  0  0  1  0  0  0  0  0 36]]
+
+Important note:
+This accuracy is measured on synthetic dummy data generated from the project's rule-based profiles.
+It proves the model learned the dummy-data pattern, not that it is validated on real student outcomes.

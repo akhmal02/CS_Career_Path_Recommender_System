@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Career Compass{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" href="{{ url_for('index') }}">
+            <span class="brand-mark">CC</span>
+            <span><b>Career</b>Compass</span>
+        </a>
+        <div class="header-tools">
+            {% if session.get('user_email') %}
+                <a class="header-profile" href="{{ url_for('profile') }}">Hello, {{ session.get('user_name', 'Student') }}</a>
+                <a class="header-action" href="{{ url_for('questionnaire') }}">Open questionnaire</a>
+            {% else %}
+                <a class="header-profile" href="{{ url_for('login') }}">Sign in</a>
+                <a class="header-action" href="{{ url_for('signup') }}">Create account</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash flash-{{ category }}" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>Career Path Recommendation System for Computer Science Students</p>
+    </footer>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+        <a class="{% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}" data-nav-item="home">
+            <span class="nav-icon nav-home" aria-hidden="true"></span><span>Home</span>
+        </a>
+        <a class="{% if request.endpoint == 'career_detail' %}active{% endif %}" href="{{ url_for('index') }}#careers" data-nav-item="careers">
+            <span class="nav-icon nav-careers" aria-hidden="true"></span><span>Careers</span>
+        </a>
+        {% if session.get('user_email') %}
+        <a class="{% if request.endpoint == 'chatbot_page' %}active{% endif %}" href="{{ url_for('chatbot_page') }}">
+            <span class="nav-icon nav-chatbot" aria-hidden="true"></span><span>Chatbot</span>
+        </a>
+        <a class="{% if request.endpoint in ['questionnaire', 'result'] %}active{% endif %}" href="{{ url_for('questionnaire') }}">
+            <span class="nav-icon nav-recommend" aria-hidden="true"></span><span>Questionnaire</span>
+        </a>
+        <a class="{% if request.endpoint == 'profile' %}active{% endif %}" href="{{ url_for('profile') }}">
+            <span class="nav-icon nav-profile" aria-hidden="true"></span><span>Profile</span>
+        </a>
+        {% endif %}
+    </nav>
+</body>
+</html>

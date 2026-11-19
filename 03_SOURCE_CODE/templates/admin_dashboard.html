@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Admin dashboard | Career Compass{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <span class="eyebrow">Administration</span>
+    <h1>Recommendation dashboard</h1>
+    <p>Signed in as {{ session.username }}. Add content and inspect recent recommendations.</p>
+</section>
+
+<div class="tab-list" role="tablist">
+    <button class="tab active" data-tab="careers">Career paths</button>
+    <button class="tab" data-tab="skills">Skills</button>
+    <button class="tab" data-tab="rules">Rules</button>
+    <button class="tab" data-tab="results">Results</button>
+</div>
+
+<section class="tab-panel active" id="careers">
+    <form action="{{ url_for('add_career_path') }}" method="post" class="admin-form panel">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h2>Add career path</h2>
+        <label>Name<input name="name" maxlength="100" required></label>
+        <label>Description<textarea name="short_description" maxlength="1000" required></textarea></label>
+        <label>Courses or certifications<textarea name="suggested_courses" maxlength="1000" required></textarea></label>
+        <label class="checkbox-line"><input type="checkbox" name="is_active" checked> Active</label>
+        <button class="button" type="submit">Add career path</button>
+    </form>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Name</th><th>Status</th><th>Description</th><th>Action</th></tr></thead>
+            <tbody>
+            {% for path in paths %}
+                <tr>
+                    <td><strong>{{ path.name }}</strong></td>
+                    <td>{{ "Active" if path.is_active else "Inactive" }}</td>
+                    <td>{{ path.short_description }}</td>
+                    <td>
+                        <form action="{{ url_for('delete_item', item_type='career', item_id=path.id) }}" method="post" data-confirm>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="danger-button">Deactivate</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="tab-panel" id="skills">
+    <form action="{{ url_for('add_skill') }}" method="post" class="admin-form panel">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h2>Add skill</h2>
+        <label>Career path
+            <select name="career_path_id" required>
+                {% for path in paths %}<option value="{{ path.id }}">{{ path.name }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Skill name<input name="name" maxlength="100" required></label>
+        <label class="checkbox-line"><input type="checkbox" name="is_required" checked> Core skill</label>
+        <button class="button" type="submit">Add skill</button>
+    </form>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Career</th><th>Skill</th><th>Type</th><th>Action</th></tr></thead>
+            <tbody>
+            {% for skill in skills %}
+                <tr>
+                    <td>{{ skill.career_name }}</td><td>{{ skill.name }}</td>
+                    <td>{{ "Core" if skill.is_required else "Helpful" }}</td>
+                    <td>
+                        <form action="{{ url_for('delete_item', item_type='skill', item_id=skill.id) }}" method="post" data-confirm>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="danger-button">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="tab-panel" id="rules">
+    <form action="{{ url_for('add_rule') }}" method="post" class="admin-form panel">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h2>Add recommendation rule</h2>
+        <label>Career path
+            <select name="career_path_id" required>
+                {% for path in paths %}<option value="{{ path.id }}">{{ path.name }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Criterion
+            <select name="criterion_type" required>
+                {% for value, label in criterion_labels.items() %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Stored option value<input name="criterion_value" required placeholder="Example: programming"></label>
+        <label>Points<input type="number" name="points" min="1" max="20" value="5" required></label>
+        <label>Reason<input name="reason" maxlength="255" required></label>
+        <button class="button" type="submit">Add rule</button>
+    </form>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Career</th><th>Criterion</th><th>Value</th><th>Points</th><th>Action</th></tr></thead>
+            <tbody>
+            {% for rule in rules %}
+                <tr>
+                    <td>{{ rule.career_name }}</td>
+                    <td>{{ criterion_labels[rule.criterion_type] }}</td>
+                    <td><code>{{ rule.criterion_value }}</code></td><td>{{ rule.points }}</td>
+                    <td>
+                        <form action="{{ url_for('delete_item', item_type='rule', item_id=rule.id) }}" method="post" data-confirm>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="danger-button">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="tab-panel" id="results">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Date</th><th>Student</th><th>Recommendation</th><th>Match</th><th>Action</th></tr></thead>
+            <tbody>
+            {% for item in results %}
+                <tr>
+                    <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ item.student_name or "Anonymous" }}</td>
+                    <td><a href="{{ url_for('result', result_id=item.id) }}">{{ item.career_name }}</a></td>
+                    <td>{{ item.match_percentage|int }}%</td>
+                    <td>
+                        <form action="{{ url_for('delete_item', item_type='result', item_id=item.id) }}" method="post" data-confirm>
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="danger-button">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5">No recommendations have been submitted yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+

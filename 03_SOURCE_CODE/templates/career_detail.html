@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ career.name }} | Career Compass{% endblock %}
+{% block content %}
+<section class="career-detail-hero">
+    <a class="back-link" href="{{ url_for('index') }}#careers">← All career paths</a>
+    <span class="eyebrow">Career profile</span>
+    <h1>{{ career.name }}</h1>
+    <p>{{ career.description }}</p>
+    <a class="gradient-button" href="{{ url_for('questionnaire') }}">Check my match <span>→</span></a>
+</section>
+
+<section class="career-detail-grid">
+    <article class="detail-panel detail-panel-wide">
+        <span class="detail-number">01</span>
+        <h2>What you would do</h2>
+        <ul class="detail-list">
+            {% for activity in activities %}<li>{{ activity }}</li>{% endfor %}
+        </ul>
+    </article>
+    <article class="detail-panel">
+        <span class="detail-number">02</span>
+        <h2>Core skills</h2>
+        <div class="tags">
+            {% for skill in core_skills %}<span>{{ skill }}</span>{% endfor %}
+        </div>
+    </article>
+    <article class="detail-panel">
+        <span class="detail-number">03</span>
+        <h2>Good interests to have</h2>
+        <ul class="detail-list">
+            {% for interest in interests %}<li>{{ interest }}</li>{% endfor %}
+        </ul>
+    </article>
+    <article class="detail-panel">
+        <span class="detail-number">04</span>
+        <h2>Typical work style</h2>
+        <ul class="detail-list">
+            {% for style in work_styles %}<li>{{ style }}</li>{% endfor %}
+        </ul>
+    </article>
+    <article class="detail-panel detail-panel-wide learning-panel">
+        <span class="detail-number">05</span>
+        <h2>Suggested learning path</h2>
+        <div class="course-list">
+            {% for course in career.courses %}
+            <span><b>{{ "%02d"|format(loop.index) }}</b>{{ course }}</span>
+            {% endfor %}
+        </div>
+    </article>
+</section>
+{% endblock %}

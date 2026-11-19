@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}My profile | Career Compass{% endblock %}
+{% block content %}
+<section class="page-heading profile-heading">
+    <span class="eyebrow">Student profile</span>
+    <h1>Hello, {{ user.name }}.</h1>
+    <p>Keep your study details current and review your latest recommendation.</p>
+</section>
+
+<section class="profile-grid">
+    <article class="panel profile-form profile-main-card">
+        <form method="post" class="profile-details-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div>
+                <span class="eyebrow">Profile details</span>
+                <h2>Student information</h2>
+            </div>
+            <label>Full name<input name="name" value="{{ user.name }}" maxlength="100" required></label>
+            <label>Email<input value="{{ user.email }}" disabled></label>
+            <label>Programme<input name="program" value="{{ user.program }}" maxlength="100" placeholder="Example: Bachelor of Computer Science"></label>
+            <label>Year of study
+                <select name="year">
+                    <option value="">Select year</option>
+                    {% for year in ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Postgraduate'] %}
+                    <option {% if user.year == year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button class="button profile-save-button" type="submit">Save profile</button>
+        </form>
+
+        <form action="{{ url_for('change_password') }}" method="post" class="change-password-card embedded-security-card" data-disable-on-submit>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <span class="eyebrow">Account security</span>
+            <h2>Change password</h2>
+            <label>Current password
+                <span class="password-field">
+                    <input type="password" name="current_password" required autocomplete="current-password">
+                    <button class="password-toggle" type="button" aria-label="Show password" data-password-toggle>
+                        <span class="eye-icon" aria-hidden="true"></span>
+                    </button>
+                </span>
+            </label>
+            <label>New password
+                <span class="password-field">
+                    <input type="password" name="new_password" required minlength="8" autocomplete="new-password">
+                    <button class="password-toggle" type="button" aria-label="Show password" data-password-toggle>
+                        <span class="eye-icon" aria-hidden="true"></span>
+                    </button>
+                </span>
+            </label>
+            <label>Confirm new password
+                <span class="password-field">
+                    <input type="password" name="confirm_password" required minlength="8" autocomplete="new-password">
+                    <button class="password-toggle" type="button" aria-label="Show password" data-password-toggle>
+                        <span class="eye-icon" aria-hidden="true"></span>
+                    </button>
+                </span>
+            </label>
+            <button class="button profile-save-button" type="submit">Update password</button>
+        </form>
+    </article>
+
+    <div class="profile-side-stack">
+        <article class="panel latest-result-card">
+            <div>
+                <span class="eyebrow">{% if latest %}{{ latest.label|default(latest.tier ~ ' Match') }}{% else %}No result yet{% endif %}</span>
+                <h2>Latest recommendation</h2>
+            </div>
+            {% if latest %}
+                <strong>{{ latest.name }}</strong>
+                <div class="profile-score-pill">{{ latest.percentage }}%</div>
+                {% if latest_recommendations|length > 1 %}
+                <div class="profile-top-list" aria-label="Latest top 3 recommendations">
+                    {% for item in latest_recommendations %}
+                    <div>
+                        <span>#{{ loop.index }}</span>
+                        <b>{{ item.name }}</b>
+                        <em>{{ item.percentage }}%</em>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <a class="button" href="{{ url_for('result') }}">Review result</a>
+            {% else %}
+                <p>You have not completed the questionnaire yet.</p>
+                <a class="button" href="{{ url_for('questionnaire') }}">Start questionnaire</a>
+            {% endif %}
+            <form action="{{ url_for('logout') }}" method="post" class="profile-logout">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="danger-button" type="submit">Sign out</button>
+            </form>
+        </article>
+    </div>
+</section>
+{% endblock %}

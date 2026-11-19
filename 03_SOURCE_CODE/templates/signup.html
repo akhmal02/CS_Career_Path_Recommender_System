@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Create account | Career Compass{% endblock %}
+{% block content %}
+<section class="auth-shell">
+    <form method="post" class="auth-card" data-disable-on-submit>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <span class="eyebrow">Student account</span>
+        <h1>Create your account</h1>
+        <p>Your demo account is stored only while the local server is running.</p>
+        <label>Full name
+            <input type="text" name="name" required maxlength="100" autocomplete="name">
+        </label>
+        <label>Email
+            <input type="email" name="email" required maxlength="255" autocomplete="email">
+        </label>
+        <label>Password
+            <span class="password-field">
+                <input type="password" name="password" required minlength="8" autocomplete="new-password">
+                <button class="password-toggle" type="button" aria-label="Show password" data-password-toggle>
+                    <span class="eye-icon" aria-hidden="true"></span>
+                </button>
+            </span>
+        </label>
+        <button class="button" type="submit">Create account</button>
+        <p>Already registered? <a href="{{ url_for('login') }}">Sign in</a></p>
+    </form>
+</section>
+{% endblock %}
